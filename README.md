@@ -93,5 +93,6 @@ function $yousetupuser () {
     export AWS_INITIAL_PASSWORD=$aws_initial_password
     export AWS_CONSOLE_LOGIN_URL=https://$(echo $arn | cut -f 5 -d ":").signin.aws.amazon.com/console
 }
+
 END
 ```
