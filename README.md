@@ -70,7 +70,7 @@ yousetupuser=[yousetupuser]
 
 # create aws credential user
 aws iam create-user --user-name $yousetupuser
-export POLICYARN=$(aws iam list-policies --query 'Policies[?PolicyName==`PowerUserAccess`].{ARN:Arn}' --output text)       ~
+export POLICYARN=$(aws iam list-policies --query 'Policies[?PolicyName==`PowerUserAccess`].{ARN:Arn}' --output text)
 aws iam attach-user-policy --user-name $yousetupuser --policy-arn $POLICYARN
 aws_initial_password=$(mkpasswd -l 16)
 aws iam create-login-profile --user-name $yousetupuser --password $aws_initial_password --password-reset-required
