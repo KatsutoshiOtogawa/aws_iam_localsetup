@@ -70,8 +70,13 @@ yousetupuser=[yousetupuser]
 export POLICYARN=$(aws iam list-policies --query 'Policies[?PolicyName==`PowerUserAccess`].{ARN:Arn}' --output text)
 
 # create aws credential user
-aws iam create-user --user-name $yousetupuser
+arn=$(aws iam create-user --user-name $yousetupuser --output text)
 aws iam attach-user-policy --user-name $yousetupuser --policy-arn $POLICYARN
+
+# aws user is enable to change youself password
+export POLICYARN2=$(aws iam list-policies --query 'Policies[?PolicyName==`IAMUserChangePassword`].{ARN:Arn}' --output text)
+aws iam attach-user-policy --user-name $yousetupuser --policy-arn $POLICYARN2
+
 aws_initial_password=$(mkpasswd -l 16)
 aws iam create-login-profile --user-name $yousetupuser --password $aws_initial_password --password-reset-required
 aws iam create-access-key --user-name $yousetupuser >> $yousetupuser-access-key.json
@@ -86,7 +91,7 @@ function $yousetupuser () {
     aws configure set region 'ap-northeast-1'
     aws configure set format json
     export AWS_INITIAL_PASSWORD=$aws_initial_password
-    export AWS_CONSOLE_LOGIN_URL=$aws_initial_password
+    export AWS_CONSOLE_LOGIN_URL=https://$(echo $arn | cut -f 5 -d ":").signin.aws.amazon.com/console
 }
 END
 ```
