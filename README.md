@@ -74,9 +74,9 @@ aws iam create-user --user-name $yousetupuser
 aws iam attach-user-policy --user-name $yousetupuser --policy-arn $POLICYARN
 aws_initial_password=$(mkpasswd -l 16)
 aws iam create-login-profile --user-name $yousetupuser --password $aws_initial_password --password-reset-required
-aws iam create-access-key --user-name $yousetupuser >> access-key.json
-aws_access_key_id=$(cat access-key.json | jq -r .AccessKey.AccessKeyId)
-aws_secret_access_key=$(cat access-key.json | jq -r .AccessKey.SecretAccessKey)
+aws iam create-access-key --user-name $yousetupuser >> $yousetupuser-access-key.json
+aws_access_key_id=$(cat $yousetupuser-access-key.json | jq -r .AccessKey.AccessKeyId)
+aws_secret_access_key=$(cat $yousetupuser-access-key.json | jq -r .AccessKey.SecretAccessKey)
 
 cat << END >> ~/.bash_profile
 # switch aws user
