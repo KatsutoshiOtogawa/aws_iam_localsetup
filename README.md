@@ -46,7 +46,7 @@ with open(os.path.join(os.environ["HOME"],'new_user_credentials.csv')) as f:
     data = csv.DictReader(f)
     for row in data:
         with open(os.path.join(os.environ["HOME"],'.bash_profile'),'a') as bash_profile:
-            bash_profile.write('# switch aws user')
+            bash_profile.write('# switch aws user\n')
             bash_profile.write('function {} {{\n'.format(os.environ['yousetupuser']))
             bash_profile.write('    aws configure set aws_access_key_id {}\n'.format(row['Access key ID']))
             bash_profile.write('    aws configure set aws_secret_access_key {}\n'.format(row['Secret access key']))     
