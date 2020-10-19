@@ -35,3 +35,29 @@ sudo chown $yousetupuser /Users/$yousetupuser/new_user_credentials.csv
 # execute python script and set aws credential.
 su - $yousetupuser -c "python3 \$HOME/aws_credential.py"
 ```
+## You Usually use OS youser 
+
+```
+export yousetupuser=[yousetupuser]
+python3 << END
+import csv
+import os
+with open(os.path.join(os.environ["HOME"],'new_user_credentials.csv')) as f:
+    data = csv.DictReader(f)
+    for row in data:
+        with open(os.path.join(os.environ["HOME"],'.bash_profile'),'a') as bash_profile:
+            bash_profile.write('function {} {{\n'.format(os.environ['yousetupuser']))
+            bash_profile.write('    aws configure set aws_access_key_id {}\n'.format(row['Access key ID']))
+            bash_profile.write('    aws configure set aws_secret_access_key {}\n'.format(row['Secret access key']))     
+            bash_profile.write('    aws configure set region {}\n'.format('ap-northeast-1'))
+            bash_profile.write('    aws configure set format {}\n'.format('json'))
+            bash_profile.write('    export AWS_INITIAL_PASSWORD={}\n'.format(row['Password']))
+            bash_profile.write('    export AWS_CONSOLE_LOGIN_URL={}\n'.format(row['Console login link']))
+            # }はエスケープしなくて良い。
+            bash_profile.write('}\n')
+
+END
+
+# you want to swich aws user, you type ${yousetupuser} and Enter.
+
+```
