@@ -1,4 +1,4 @@
-# aws_iam_localsetup
+# aws_local_OSusersetup
 you create new User added appropriate permission in Aws IAM.
 
 you create OS user *aws_console*. *aws_console* is writtent by using you create new user.
