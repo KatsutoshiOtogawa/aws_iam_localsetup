@@ -4,6 +4,7 @@ you create new User added appropriate permission in Aws IAM.
 you create OS user *aws_console*. *aws_console* is writtent by using you create new user.
 
 And, you aws cli was install and every user is enable to use aws cli.
+
 ## mac OS
 ```
 yousetupuser=[yousetupuser]
@@ -61,4 +62,31 @@ END
 
 # you want to swich aws user, you type ${yousetupuser} and Enter.
 ${yousetupuser}
+```
+
+# 
+```
+yousetupuser=[yousetupuser]
+
+# create aws credential user
+aws iam create-user --user-name $yousetupuser
+export POLICYARN=$(aws iam list-policies --query 'Policies[?PolicyName==`PowerUserAccess`].{ARN:Arn}' --output text)       ~
+aws iam attach-user-policy --user-name $yousetupuser --policy-arn $POLICYARN
+aws_initial_password=$(mkpasswd -l 16)
+aws iam create-login-profile --user-name $yousetupuser --password $aws_initial_password --password-reset-required
+aws iam create-access-key --user-name $yousetupuser >> access-key.json
+aws_access_key_id=$(cat access-key.json | jq -r .AccessKey.AccessKeyId)
+aws_secret_access_key=$(cat access-key.json | jq -r .AccessKey.SecretAccessKey)
+
+cat << END >> ~/.bash_profile
+# switch aws user
+function $yousetupuser () {
+    aws configure set aws_access_key_id $aws_access_key_id
+    aws configure set aws_secret_access_key $aws_secret_access_key
+    aws configure set region 'ap-northeast-1'
+    aws configure set format json
+    export AWS_INITIAL_PASSWORD=$aws_initial_password
+    export AWS_CONSOLE_LOGIN_URL=$aws_initial_password
+}
+END
 ```
